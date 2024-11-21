@@ -13,17 +13,17 @@ sap.ui.define([
             //var oModel = this.getModel(); // Ensure this model is properly defined in the manifest.json
             //oModel.bindContext("/SalesData(vbeln='100',IsActiveEntity=true)/com.sap.gateway.srvd.zsd_so_data.v0001.funDownload(...)").invoke();
             var oModel = this.getModel();
-
+            var oObject = sap.ui.getCore().byId("com.listreportcustom::SalesDataList--fe::table::SalesData::LineItem-innerTable").getSelectedItem().getBindingContext().getObject();
             // Prepare the data for the request
             var sServiceUrl = oModel.sServiceUrl; // Base service URL
 
             // Define the entity and function paths
-            var sEntityPath = "SalesData(vbeln='100',IsActiveEntity=true)";
+            var sEntityPath = "SalesData(vbeln='" + oObject.vbeln + "',IsActiveEntity=" + oObject.IsActiveEntity + ")";
             var sFunctionPath = sServiceUrl + "/" + sEntityPath + "/com.sap.gateway.srvd.zsd_so_data.v0001.actDownload";
 
             // Step 1: Retrieve CSRF token via a GET request
             $.ajax({
-                url: sServiceUrl + "/SalesData(vbeln='100',IsActiveEntity=true)", // Use any entity to fetch CSRF token
+                url: sServiceUrl + "/SalesData(vbeln='" + oObject.vbeln + "',IsActiveEntity=" + oObject.IsActiveEntity + ")", // Use any entity to fetch CSRF token
                 type: "GET",
                 success: function (data, status, xhr) {
                     var csrfToken = oModel.getHttpHeaders()["X-CSRF-Token"]; // Retrieve the CSRF token
