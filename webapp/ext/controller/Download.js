@@ -13,7 +13,12 @@ sap.ui.define([
             //var oModel = this.getModel(); // Ensure this model is properly defined in the manifest.json
             //oModel.bindContext("/SalesData(vbeln='100',IsActiveEntity=true)/com.sap.gateway.srvd.zsd_so_data.v0001.funDownload(...)").invoke();
             var oModel = this.getModel();
-            var oObject = sap.ui.getCore().byId("com.listreportcustom::SalesDataList--fe::table::SalesData::LineItem-innerTable").getSelectedItem().getBindingContext().getObject();
+            var oSelectedItem = sap.ui.getCore().byId("com.listreportcustom::SalesDataList--fe::table::SalesData::LineItem-innerTable").getSelectedItem();
+            if (oSelectedItem === null) {
+                sap.m.MessageToast.show("Select item to download");
+                return;
+            }
+            var oObject = oSelectedItem.getBindingContext().getObject();
             // Prepare the data for the request
             var sServiceUrl = oModel.sServiceUrl; // Base service URL
 
@@ -44,7 +49,10 @@ sap.ui.define([
 
                             // Assuming 'data.template' contains the Base64-encoded content
                             let base64Content = data.template; // Replace with your variable holding the template data
-
+                            if (base64Content === "") {
+                                sap.m.MessageToast.show("Empty xString/template value");
+                                return;
+                            }
                             // Step 1: Clean the Base64 string
                             // Remove any non-Base64 characters like newlines or extra spaces
                             base64Content = base64Content.replace(/\s+/g, '');
